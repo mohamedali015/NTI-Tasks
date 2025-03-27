@@ -3,21 +3,19 @@ import 'dart:io';
 List<List<String>> seats = List.generate(5, (i)=> List.generate(5, (j) => 'E')) ;
 Map<Map<int, int>, Map<String, String>> usersData = {};
 
-validInput (String type) {
-  while (true) {
-    String? input = stdin.readLineSync();
+validInput ({required String type}) {
+  String? input = stdin.readLineSync();
 
-    if (input == null || input.trim().isEmpty) {
-      print("❌ Invalid input!, try again:\n");
-      showOptions() ;
+  if (input == null || input.trim().isEmpty) {
+    print("❌ Invalid input!, try again:\n");
+    showOptions() ;
+  }
+  else {
+    if (type == 'int') {
+      return int.parse(input) ;
     }
     else {
-      if (type == 'int') {
-        return int.parse(input) ;
-      }
-      else {
-        return input ;
-      }
+      return input ;
     }
   }
 }
@@ -28,12 +26,12 @@ void showOptions () {
   print("Press 3 to show user data") ;
   print("Press 4 to exit") ;
 
-  int input = validInput('int') ;
+  int input = validInput(type: "int") ;
 
-  actionOptions(input) ;
+  actionOptions(input: input) ;
 }
 
-void actionOptions (input) {
+void actionOptions ({required input}) {
   if (input > 0 || input <= 4) {
     if (input == 1) {
       bookSeat() ;
@@ -56,7 +54,7 @@ void actionOptions (input) {
   }
 }
 
-bool validSeat (int row, int column) {
+bool validSeat ({required int row, required int column}) {
   return ((row <= 5 && row > 0) && (column <= 5 && column > 0)) && seats[row - 1][column - 1] == 'E' ;
 }
 
@@ -64,17 +62,17 @@ void bookSeat () {
   print("") ;
 
   stdout.write("Enter Row (1-5): ") ; 
-  int row = validInput('int') ;
+  int row = validInput(type: "int") ;
 
   stdout.write("Enter Column (1-5): ") ;
-  int column = validInput('int') ;
+  int column = validInput(type: 'int') ;
 
-  if (validSeat(row, column)) {
+  if (validSeat(row: row, column: column)) {
     stdout.write("Enter Your Name: ") ;
-    String name = validInput('str') ;
+    String name = validInput(type: 'str') ;
 
     stdout.write("Enter Your Phone Number: ") ;
-    String number = validInput('str') ;
+    String number = validInput(type: 'str') ;
 
     seats[row - 1][column - 1] = 'B' ;
     
@@ -88,11 +86,11 @@ void bookSeat () {
   }
   else if ((row < 1 || row > 5) || (column < 1 || column > 5)) {
     print("❌ invalid seat position, try again\n") ;
-    showOptions() ;
+    bookSeat() ;
   }
   else {
     print("❌ Seat is already booked, try another one\n") ;
-    showOptions() ;
+    bookSeat() ;
   }
 }
 
